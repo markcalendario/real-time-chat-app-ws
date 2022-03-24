@@ -1,0 +1,21 @@
+.btn {
+	padding: 15px;
+	border-radius: 5px;
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+
+	&:hover {
+		transform: scale(0.98);
+	}
+}
+
+.solid-btn-main {
+	background-color: $main;
+	color: $white;
+
+	&:hover {
+		transition: 0.3s ease;
+		background-color: rgba($color: $main, $alpha: 0.5);
+	}
+}

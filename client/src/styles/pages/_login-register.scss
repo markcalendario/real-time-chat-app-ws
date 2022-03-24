@@ -1,0 +1,69 @@
+#register,
+#login {
+	min-height: 100vh;
+	background-image: url('../assets/login-bg.jpg');
+	background-size: cover;
+	.container {
+		.wrapper {
+			padding: 50px 0;
+			.box {
+				background-color: $white;
+				padding: 50px 20px;
+				border-radius: 10px;
+				@include dropShadow($black);
+				.avatar {
+					text-align: center;
+					img {
+						width: 70px;
+					}
+
+					h1 {
+						color: $main;
+						font-weight: 900;
+						font-size: large;
+					}
+				}
+
+				form {
+					margin-top: 50px;
+					& > *:not(:first-child) {
+						margin-top: 20px;
+					}
+
+					& > * {
+						input {
+							background-color: rgba($color: $main, $alpha: 0.1);
+							padding: 12px;
+						}
+					}
+
+					button {
+						width: 100%;
+					}
+
+					a {
+						text-align: center;
+						display: block;
+						text-decoration: none;
+						color: $main;
+						font-size: small;
+					}
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 768px) {
+	#login,
+	#register {
+		.container {
+			.wrapper {
+				.box {
+					margin: auto;
+					width: 340px;
+				}
+			}
+		}
+	}
+}

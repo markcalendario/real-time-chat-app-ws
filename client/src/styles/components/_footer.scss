@@ -1,0 +1,25 @@
+footer {
+	background-color: $main;
+	padding: 30px 0;
+
+	text-align: center;
+	.container {
+		.wrapper {
+			a {
+				text-decoration: none;
+				font-weight: 600;
+			}
+			p {
+				font-weight: 400;
+			}
+			a,
+			p {
+				font-size: small;
+				color: $white;
+			}
+			& > *:not(:first-child) {
+				margin-top: 7px;
+			}
+		}
+	}
+}

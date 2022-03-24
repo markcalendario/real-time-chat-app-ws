@@ -1,0 +1,83 @@
+.input {
+	display: block;
+
+	input {
+		border: 1px $black solid;
+		padding: 12px 0;
+		border: none;
+		width: 100%;
+		border: 1px transparent solid;
+		border-bottom: 1px $main solid;
+		font-weight: 500;
+	}
+
+	input:focus {
+		outline: none;
+		border: 1px $main solid;
+	}
+
+	.err-resp {
+		color: $red;
+		padding-top: 5px;
+		font-size: small;
+		text-align: left;
+	}
+}
+
+input:focus {
+	outline: none;
+}
+
+.search-bar {
+	width: 100%;
+	border-radius: 50px;
+	background-color: $white;
+	@include dropShadow($black);
+	overflow: hidden;
+	input {
+		border: 0;
+		width: 100%;
+		padding: 14px;
+		background-color: transparent;
+		color: $black;
+	}
+}
+
+.form-response {
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	border-radius: 5px;
+
+	&.error {
+		color: $white;
+		border: 1px $red solid;
+		background-color: rgba($color: $red, $alpha: 0.1);
+
+		.text,
+		.icon {
+			color: $red;
+		}
+	}
+
+	&.success {
+		color: $white;
+		border: 1px $green solid;
+		background-color: rgba($color: $green, $alpha: 0.1);
+
+		.text,
+		.icon {
+			color: $green;
+		}
+	}
+
+	.icon {
+		margin-right: 10px;
+		display: flex;
+		align-items: center;
+	}
+
+	.text {
+		font-size: small;
+	}
+}
