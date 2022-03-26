@@ -1,5 +1,6 @@
 #friend-list-mb {
 	padding: 30px 0;
+	min-height: 100vh;
 
 	.container {
 		.wrapper {
@@ -9,7 +10,7 @@
 				justify-content: space-between;
 
 				.search-bar {
-					width: 85%;
+					width: 80%;
 				}
 
 				.create-message {
@@ -31,6 +32,17 @@
 				& > *:not(:first-child) {
 					margin-top: 20px;
 				}
+				.no-chat-display {
+					text-align: center;
+
+					& > * {
+						margin-top: 10px;
+					}
+					img {
+						width: 200px;
+					}
+				}
+
 				.chat-preview {
 					display: flex;
 					align-items: center;
@@ -83,8 +95,14 @@
 							}
 						}
 
-						.time-content {
+						.time-content-read-info {
 							text-align: right;
+							display: flex;
+							align-items: baseline;
+							.read {
+								margin-right: 5px;
+								color: $main;
+							}
 							.time {
 								font-size: 12px;
 							}
@@ -156,7 +174,7 @@
 						padding: 15px;
 
 						.chat-input {
-							width: 100%;
+							width: 80%;
 							display: flex;
 							align-items: center;
 
@@ -172,9 +190,18 @@
 
 						.send {
 							display: flex;
-							svg {
-								color: $blue;
-								padding: 5px;
+							justify-content: center;
+							align-items: center;
+							color: $white;
+							background-color: $main;
+							width: 50px;
+							height: 50px;
+							border-radius: 50%;
+							cursor: pointer;
+							transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+							&:hover {
+								transform: scale(0.9) rotate(360deg);
 							}
 						}
 					}

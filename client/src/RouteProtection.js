@@ -40,7 +40,6 @@ async function generateAccessToken() {
 				return response.json();
 			})
 			.then((response) => {
-				console.log(response);
 				resolve(response.newAccessToken);
 			});
 	});

@@ -21,17 +21,14 @@ export function LargeScreenHeaderFront() {
 	);
 }
 
-export function ChattingHead() {
+export function ChattingHead(props) {
 	return (
 		<div className='chatting-head'>
 			<div className='profile'>
-				<img
-					src='https://pbs.twimg.com/profile_images/676973135695101952/bwK_jiRb_400x400.jpg'
-					alt='Name'
-				/>
+				<img src={require('../assets/egg2.jpg')} alt='Name' />
 			</div>
 
-			<h4>Mia Suarez</h4>
+			<h4>{props.fullName}</h4>
 		</div>
 	);
 }
@@ -48,10 +45,7 @@ export function MobileLoggedInHeader(props) {
 						<h4>Messenger.</h4>
 					</div>
 					<div className='profile'>
-						<img
-							src='https://preview.redd.it/iu95t4mbgf581.jpg?width=640&crop=smart&auto=webp&s=dba0a7aa38e8a7da5ea87c8decb32c9e07832581'
-							alt='Profile'
-						/>
+						<img src={require('../assets/egg.jpg')} alt='Profile' />
 					</div>
 				</Wrapper>
 			</Container>

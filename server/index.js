@@ -15,7 +15,8 @@ require('dotenv').config({ path: './.env' });
 
 // Middlewares
 app.use('/users', require('./apis/users'));
-app.use('/auth', require('./apis/auth'));
+app.use('/auth', require('./apis/auth').router);
+app.use('/friends', require('./apis/friends'));
 
 app.listen(process.env.PORT, async () => {
 	console.log(`Server listening on ${process.env.PORT}`);

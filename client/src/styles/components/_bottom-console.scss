@@ -6,7 +6,7 @@
 
 	.container {
 		background-color: $main;
-		padding: 15px;
+		overflow: hidden;
 		border-radius: 10px;
 		@include dropShadow($black);
 		color: $white;
@@ -14,6 +14,17 @@
 		.wrapper {
 			display: flex;
 			justify-content: space-between;
+
+			.bc-btn {
+				padding: 15px;
+				text-align: center;
+				cursor: pointer;
+				transition: 0.3s ease;
+				font-size: xx-large;
+				&:hover {
+					background-color: rgba($color: $white, $alpha: 0.3);
+				}
+			}
 		}
 	}
 }

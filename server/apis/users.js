@@ -7,6 +7,8 @@ const { isStrongPassword, hashPassword, arePasswordsSimilar } = require('../func
 
 const { DB } = require('../db/connection');
 const { isEmailAlreadyRegistered } = require('../functions/email');
+const { verifyAccessToken, getTokenPayload, getTokenFromBearer } = require('./auth');
+const { ObjectId } = require('mongodb');
 
 async function validateRegisterPayload(req, res, next) {
 	if (validator.isEmpty(req.body.firstName)) {
@@ -125,7 +127,8 @@ async function validateLoginPayload(req, res, next) {
 router.post('/login', validateLoginPayload, async (req, res) => {
 	const db = await DB();
 
-	const dbPassword = await new Promise((resolve) => {
+	// Get id and password
+	const dbIDandPassword = await new Promise((resolve) => {
 		db.db('messenger')
 			.collection('users')
 			.aggregate([
@@ -149,11 +152,11 @@ router.post('/login', validateLoginPayload, async (req, res) => {
 					});
 				}
 
-				resolve(result[0].password);
+				resolve({ id: result[0]._id, password: result[0].password });
 			});
 	});
 
-	const passCorrect = await arePasswordsSimilar(req.body.password, dbPassword);
+	const passCorrect = await arePasswordsSimilar(req.body.password, dbIDandPassword.password);
 	if (!passCorrect) {
 		return res.send({
 			formError: true,
@@ -161,9 +164,9 @@ router.post('/login', validateLoginPayload, async (req, res) => {
 		});
 	}
 
-	storeUserRefreshTokens(req.body.email);
+	storeUserRefreshTokens(dbIDandPassword.id, req.body.email);
 
-	const accessToken = generateAccessToken(req.body.email);
+	const accessToken = generateAccessToken(dbIDandPassword.id, req.body.email);
 	return res.send({
 		formError: false,
 		message: 'You have logged in successfully!',
@@ -171,8 +174,8 @@ router.post('/login', validateLoginPayload, async (req, res) => {
 	});
 });
 
-async function storeUserRefreshTokens(email) {
-	const refreshToken = generateRefreshToken(email);
+async function storeUserRefreshTokens(id, email) {
+	const refreshToken = generateRefreshToken(id, email);
 
 	const db = await DB();
 	db.db('messenger')
@@ -186,12 +189,44 @@ async function storeUserRefreshTokens(email) {
 		});
 }
 
-function generateRefreshToken(email) {
-	return jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '12h' });
+function generateRefreshToken(id, email) {
+	return jwt.sign({ id: id, email: email }, process.env.SECRET_KEY, { expiresIn: '12h' });
 }
 
-function generateAccessToken(email) {
-	return jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '2h' });
+function generateAccessToken(id, email) {
+	return jwt.sign({ id: id, email: email }, process.env.SECRET_KEY, { expiresIn: '2h' });
 }
+
+router.get('/my-user-id', verifyAccessToken, (req, res) => {
+	const token = getTokenFromBearer(req.headers.authorization);
+	const tokenPayload = getTokenPayload(token);
+	return res.send({ id: tokenPayload.id });
+});
+
+router.get('/get-name/:id', verifyAccessToken, async (req, res) => {
+	if (!ObjectId.isValid(req.params.id)) {
+		return res.send({ error: true, message: 'ID Malformed' }).status(401);
+	}
+
+	const db = await DB();
+	db.db('messenger')
+		.collection('users')
+		.findOne({ _id: ObjectId(req.params.id) }, (err, result) => {
+			db.close();
+			if (err) {
+				return res.send({ error: true, message: 'Database error occured.' }).status(500);
+			}
+
+			if (!result) {
+				return res.send({ error: false, message: 'Cannot find user' });
+			}
+
+			return res.send({
+				firstName: result.firstName,
+				lastName: result.lastName,
+				fullName: `${result.firstName} ${result.lastName}`,
+			});
+		});
+});
 
 module.exports = router;

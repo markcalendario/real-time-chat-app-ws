@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { DB } = require('../db/connection');
+const { ObjectId } = require('mongodb');
 
 function getTokenFromBearer(bearer) {
 	if (bearer.split(' ')[0] === 'Bearer') {
@@ -9,6 +10,10 @@ function getTokenFromBearer(bearer) {
 	}
 
 	return null;
+}
+
+function getTokenPayload(jwtTok) {
+	return jwt.decode(jwtTok);
 }
 
 router.post('/is-access-token-valid', (req, res) => {
@@ -58,15 +63,55 @@ router.get('/generate-new-access-token', (req, res) => {
 		return res.send({ isOk: false });
 	}
 
-	const newAccessToken = jwt.sign({ email: tokenPayload.email }, process.env.SECRET_KEY, {
-		expiresIn: '1h',
-	});
+	const newAccessToken = jwt.sign(
+		{ id: tokenPayload.id, email: tokenPayload.email },
+		process.env.SECRET_KEY,
+		{
+			expiresIn: '1h',
+		}
+	);
 
 	return res.send({ newAccessToken: newAccessToken });
 });
 
-function getTokenPayload(bearer) {
-	return jwt.decode(bearer);
+function verifyAccessToken(req, res, next) {
+	const token = getTokenFromBearer(req.headers.authorization);
+	jwt.verify(token, process.env.SECRET_KEY, (error, result) => {
+		if (error) {
+			return res.send({ message: 'Access token expired.' }).status(401);
+		}
+
+		if (result) {
+			next();
+		}
+	});
 }
 
-module.exports = router;
+async function isAccessTokenValid(jwtTok) {
+	return await new Promise((resolve) => {
+		jwt.verify(jwtTok, process.env.SECRET_KEY, (error, result) => {
+			if (error) {
+				resolve(false);
+			}
+
+			resolve(true);
+		});
+	});
+}
+
+function isValidMongoID(id) {
+	if (ObjectId.isValid(id)) {
+		return true;
+	}
+
+	return false;
+}
+
+module.exports = {
+	router: router,
+	isValidMongoID: isValidMongoID,
+	verifyAccessToken: verifyAccessToken,
+	getTokenFromBearer: getTokenFromBearer,
+	getTokenPayload: getTokenPayload,
+	isAccessTokenValid: isAccessTokenValid,
+};
