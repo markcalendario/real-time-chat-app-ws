@@ -182,10 +182,6 @@ async function storeUserRefreshTokens(id, email) {
 		.collection('users')
 		.updateOne({ email: email }, { $set: { refreshToken: refreshToken } }, (error, result) => {
 			db.close();
-
-			if (error) {
-				console.log(error);
-			}
 		});
 }
 

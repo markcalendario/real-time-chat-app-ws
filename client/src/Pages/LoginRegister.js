@@ -126,7 +126,7 @@ export function Register() {
 								<Button onClick={handleRegisterClick} btnStyle='solid-btn-main'>
 									Sign Up
 								</Button>
-								<a href='/register'>Already registered? Login here.</a>
+								<a href='/'>Already registered? Login here.</a>
 							</form>
 						</div>
 					</Wrapper>

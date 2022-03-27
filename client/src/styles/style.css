@@ -253,10 +253,24 @@ input:focus {
   background-color: white;
   -webkit-box-shadow: rgba(0, 0, 0, 0.07) 0px 8px 24px;
           box-shadow: rgba(0, 0, 0, 0.07) 0px 8px 24px;
-  overflow: hidden;
+  display: block;
 }
 
-.search-bar input {
+.search-bar .container .wrapper {
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.search-bar .container .wrapper h3 {
+  cursor: pointer;
+}
+
+.search-bar .container .wrapper input {
   border: 0;
   width: 100%;
   padding: 14px;
@@ -343,23 +357,32 @@ footer {
   text-align: center;
 }
 
-footer .container .wrapper a {
-  text-decoration: none;
-  font-weight: 600;
+footer .container .wrapper > *:not(:first-child) {
+  margin-top: 10px;
+  display: block;
 }
 
-footer .container .wrapper p {
-  font-weight: 400;
+footer .container .wrapper a {
+  text-decoration: none;
 }
 
 footer .container .wrapper a,
 footer .container .wrapper p {
-  font-size: small;
   color: white;
 }
 
-footer .container .wrapper > *:not(:first-child) {
-  margin-top: 7px;
+footer .container .wrapper .links {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+footer .container .wrapper .links a {
+  font-size: large;
+  margin-right: 10px;
 }
 
 #bottom-console {
@@ -498,6 +521,7 @@ footer .container .wrapper > *:not(:first-child) {
 }
 
 #friend-list-mb .container .wrapper .actions .create-message {
+  cursor: pointer;
   background-color: white;
   -webkit-box-shadow: rgba(0, 0, 0, 0.07) 0px 8px 24px;
           box-shadow: rgba(0, 0, 0, 0.07) 0px 8px 24px;
@@ -579,7 +603,7 @@ footer .container .wrapper > *:not(:first-child) {
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details {
-  width: 80%;
+  width: 70%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -589,43 +613,45 @@ footer .container .wrapper > *:not(:first-child) {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  overflow: hidden;
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .name-and-chat {
-  width: 75%;
+  width: 70%;
+}
+
+#friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .name-and-chat .name,
+#friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .name-and-chat .chat {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  /* number of lines to show */
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .name-and-chat .name {
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .name-and-chat .chat {
-  font-size: 14px;
+  font-size: 12.5px;
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .time-content-read-info {
-  text-align: right;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: baseline;
-      -ms-flex-align: baseline;
-          align-items: baseline;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: right;
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .time-content-read-info .read {
-  margin-right: 5px;
   color: #5329bd;
 }
 
 #friend-list-mb .container .wrapper .chat-preview-list .chat-preview .preview-chat-details .time-content-read-info .time {
+  margin-left: 5px;
   font-size: 12px;
 }
 
@@ -740,5 +766,61 @@ footer .container .wrapper > *:not(:first-child) {
 #messaging .container .wrapper .chat-typing-bar .container .wrapper .send:hover {
   -webkit-transform: scale(0.9) rotate(360deg);
           transform: scale(0.9) rotate(360deg);
+}
+
+#ff-modal {
+  z-index: 100000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#ff-modal .container .wrapper .ff-box {
+  position: absolute;
+  overflow-y: scroll;
+  left: 50%;
+  top: 60px;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  background-color: white;
+  width: 340px;
+  height: 500px;
+  padding: 40px;
+  border-radius: 5px;
+}
+
+#ff-modal .container .wrapper .ff-box .close {
+  text-align: right;
+  color: #bd2c00;
+  cursor: pointer;
+}
+
+#ff-modal .container .wrapper .ff-box > *:not(:first-child) {
+  margin-top: 20px;
+}
+
+#ff-modal .container .wrapper .ff-box .people-list .people {
+  margin-top: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+}
+
+#ff-modal .container .wrapper .ff-box .people-list .people:hover {
+  color: #5329bd;
+  font-weight: bold;
+}
+
+#ff-modal .container .wrapper .ff-box .people-list .people img {
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 /*# sourceMappingURL=style.css.map */

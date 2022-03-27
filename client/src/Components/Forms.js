@@ -1,5 +1,10 @@
 import React from 'react';
-import { RiCheckboxCircleFill, RiCloseCircleFill, RiErrorWarningFill } from 'react-icons/ri';
+import {
+	RiCheckboxCircleFill,
+	RiCloseCircleFill,
+	RiErrorWarningFill,
+	RiSearchLine,
+} from 'react-icons/ri';
 
 export function FormInput(props) {
 	return (
@@ -13,7 +18,14 @@ export function FormInput(props) {
 export function SearchBar(props) {
 	return (
 		<div className='search-bar'>
-			<input type='text' placeholder={props.placeholder} />
+			<div className='container'>
+				<div className='wrapper'>
+					<h3>
+						<RiSearchLine />
+					</h3>
+					<input onChange={props.onChange} type='text' placeholder={props.placeholder} />
+				</div>
+			</div>
 		</div>
 	);
 }

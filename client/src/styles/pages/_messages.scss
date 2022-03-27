@@ -14,6 +14,7 @@
 				}
 
 				.create-message {
+					cursor: pointer;
 					background-color: $white;
 					@include dropShadow($black);
 					display: flex;
@@ -72,38 +73,40 @@
 					}
 
 					.preview-chat-details {
-						width: 80%;
+						width: 70%;
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
+						overflow: hidden;
 
 						.name-and-chat {
-							width: 75%;
-							overflow: hidden;
-							text-overflow: ellipsis;
-							display: -webkit-box;
-							-webkit-line-clamp: 3; /* number of lines to show */
-							line-clamp: 3;
-							-webkit-box-orient: vertical;
-
+							width: 70%;
+							.name,
+							.chat {
+								white-space: nowrap;
+								overflow: hidden;
+								text-overflow: ellipsis;
+							}
 							.name {
-								font-size: 15px;
+								font-weight: 600;
+								font-size: 13px;
 							}
 
 							.chat {
-								font-size: 14px;
+								font-size: 12.5px;
 							}
 						}
 
 						.time-content-read-info {
-							text-align: right;
 							display: flex;
-							align-items: baseline;
+							align-items: center;
+							text-align: right;
 							.read {
-								margin-right: 5px;
 								color: $main;
 							}
+
 							.time {
+								margin-left: 5px;
 								font-size: 12px;
 							}
 						}
@@ -203,6 +206,60 @@
 							&:hover {
 								transform: scale(0.9) rotate(360deg);
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+#ff-modal {
+	z-index: 100000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100%;
+	background-color: rgba($color: $black, $alpha: 0.5);
+	.container {
+		.wrapper {
+			.ff-box {
+				.close {
+					text-align: right;
+					color: $red;
+					cursor: pointer;
+				}
+				position: absolute;
+				overflow-y: scroll;
+				left: 50%;
+				top: 60px;
+				transform: translateX(-50%);
+				background-color: $white;
+				width: 340px;
+				height: 500px;
+				padding: 40px;
+				border-radius: 5px;
+
+				& > *:not(:first-child) {
+					margin-top: 20px;
+				}
+
+				.people-list {
+					.people {
+						margin-top: 30px;
+						display: flex;
+						align-items: center;
+						cursor: pointer;
+
+						&:hover {
+							color: $main;
+							font-weight: bold;
+						}
+						img {
+							width: 50px;
+							border-radius: 50%;
+							margin-right: 10px;
 						}
 					}
 				}

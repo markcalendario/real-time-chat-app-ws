@@ -33,13 +33,24 @@ input:focus {
 	border-radius: 50px;
 	background-color: $white;
 	@include dropShadow($black);
-	overflow: hidden;
-	input {
-		border: 0;
-		width: 100%;
-		padding: 14px;
-		background-color: transparent;
-		color: $black;
+	display: block;
+
+	.container {
+		.wrapper {
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			h3 {
+				cursor: pointer;
+			}
+			input {
+				border: 0;
+				width: 100%;
+				padding: 14px;
+				background-color: transparent;
+				color: $black;
+			}
+		}
 	}
 }
 

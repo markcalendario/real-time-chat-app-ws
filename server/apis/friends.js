@@ -11,7 +11,7 @@ const {
 } = require('./auth');
 const moment = require('moment');
 const validator = require('validator');
-const { WebSocket, WebSocketServer } = require('ws');
+const { WebSocketServer } = require('ws');
 router.get('/get-latest-chats', verifyAccessToken, async (req, res) => {
 	const token = getTokenFromBearer(req.headers.authorization);
 	const payload = getTokenPayload(token);
@@ -54,6 +54,7 @@ router.get('/get-latest-chats', verifyAccessToken, async (req, res) => {
 								senderId: { $push: '$senderId' },
 								chatDate: { $push: '$createdAt' },
 								receiverRead: { $push: '$receiverRead' },
+								chatContentId: { $push: '$_id' },
 							},
 						},
 						{
@@ -70,6 +71,9 @@ router.get('/get-latest-chats', verifyAccessToken, async (req, res) => {
 						},
 						{
 							$unwind: '$receiverRead',
+						},
+						{
+							$unwind: '$chatContentId',
 						},
 					],
 				},
@@ -119,7 +123,6 @@ router.get('/get-latest-chats', verifyAccessToken, async (req, res) => {
 		.toArray((error, result) => {
 			db.close();
 			if (error) {
-				console.log(error);
 				return res.send({ error: true, message: 'Database error occured.' }).status(401);
 			}
 
@@ -175,6 +178,21 @@ router.get('/get-chats/:chatID', verifyAccessToken, async (req, res) => {
 		});
 });
 
+const liveIncomingMessages = new WebSocketServer({
+	port: 7780,
+	path: '/live-incoming-message-list',
+});
+
+liveIncomingMessages.on('connection', (socket) => {
+	socket.on('message', async (data) => {
+		const parsedData = JSON.parse(data);
+
+		liveIncomingMessages.clients.forEach((client) => {
+			client.send(JSON.stringify({ chatID: parsedData.chatID }));
+		});
+	});
+});
+
 const messagingServer = new WebSocketServer({ port: 7778, path: '/messaging' });
 messagingServer.on('connection', (socket) => {
 	socket.on('message', async (data) => {
@@ -182,7 +200,6 @@ messagingServer.on('connection', (socket) => {
 		const chatData = await saveChat(parsedData);
 
 		if (!chatData) {
-			console.log(false);
 			return socket.send(JSON.stringify({ error: true, message: 'WS problem occured.' }));
 		}
 
@@ -196,7 +213,6 @@ const typingServer = new WebSocketServer({ port: 7779, path: '/typing' });
 typingServer.on('connection', (socket) => {
 	socket.on('message', (data) => {
 		const parsed = JSON.parse(data);
-		console.log(parsed);
 
 		typingServer.clients.forEach((client) => {
 			client.send(
@@ -250,7 +266,7 @@ async function saveChat(data) {
 
 				if (result.length === 0) {
 					db.close();
-					console.log('D');
+
 					return false;
 				}
 				// Continue if authorized
@@ -288,5 +304,109 @@ async function saveChat(data) {
 			});
 	});
 }
+
+router.post('/set-chat-read/:chatContentID', verifyAccessToken, async (req, res) => {
+	if (!ObjectId.isValid(req.params.chatContentID)) {
+		return res.send(404);
+	}
+
+	const db = await DB();
+	db.db('messenger')
+		.collection('chats')
+		.updateOne({ _id: ObjectId(req.params.chatContentID) }, { $set: { receiverRead: true } });
+});
+
+router.get('/find/:name', verifyAccessToken, async (req, res) => {
+	const db = await DB();
+
+	const token = getTokenFromBearer(req.headers.authorization);
+	const payload = getTokenPayload(token);
+
+	db.db('messenger')
+		.collection('users')
+		.aggregate([
+			{
+				$project: {
+					name: { $concat: ['$firstName', ' ', '$lastName'] },
+				},
+			},
+			{
+				$match: { name: new RegExp(req.params.name, 'i'), _id: { $ne: ObjectId(payload.id) } },
+			},
+		])
+		.toArray((error, result) => {
+			db.close();
+			if (error) {
+				return res.status(500);
+			}
+
+			return res.send({ people: result });
+		});
+});
+
+router.post('/make-friends', verifyAccessToken, async (req, res) => {
+	if (!ObjectId.isValid(req.body.with)) {
+		return res.status(401);
+	}
+	const token = getTokenFromBearer(req.headers.authorization);
+	const payload = getTokenPayload(token);
+
+	// check if already friend
+	// if friend, get chatroom id
+
+	const db = await DB();
+	await new Promise((resolve) => {
+		db.db('messenger')
+			.collection('chats_data')
+			.aggregate([
+				{
+					$match: {
+						$or: [
+							{
+								$and: [{ userA: ObjectId(payload.id) }, { userB: ObjectId(req.body.with) }],
+							},
+							{
+								$and: [{ userB: ObjectId(payload.id) }, { userA: ObjectId(req.body.with) }],
+							},
+						],
+					},
+				},
+			])
+			.toArray((error, result) => {
+				if (error) {
+					db.close();
+					return res.status(500);
+				}
+				console.log(result);
+				if (result.length > 0) {
+					db.close();
+					return res.send({
+						chatRoomId: result[0]._id,
+					});
+				}
+
+				resolve();
+			});
+	});
+
+	// if not yet friend, create then open chat room
+	db.db('messenger')
+		.collection('chats_data')
+		.insertOne(
+			{ userA: ObjectId(payload.id), userB: ObjectId(req.body.with) },
+			(error, result) => {
+				if (error) {
+					return res.send({
+						isAddFriendSuccess: false,
+						message: 'Database error occured.',
+					});
+				}
+
+				return res.send({
+					chatRoomId: result.insertedId,
+				});
+			}
+		);
+});
 
 module.exports = router;

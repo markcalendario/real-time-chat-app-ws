@@ -7,20 +7,26 @@ footer {
 	text-align: center;
 	.container {
 		.wrapper {
+			& > *:not(:first-child) {
+				margin-top: 10px;
+				display: block;
+			}
 			a {
 				text-decoration: none;
-				font-weight: 600;
 			}
-			p {
-				font-weight: 400;
-			}
+
 			a,
 			p {
-				font-size: small;
 				color: $white;
 			}
-			& > *:not(:first-child) {
-				margin-top: 7px;
+
+			.links {
+				display: flex;
+				justify-content: center;
+				a {
+					font-size: large;
+					margin-right: 10px;
+				}
 			}
 		}
 	}
