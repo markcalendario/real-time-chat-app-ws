@@ -1,8 +1,9 @@
+## 🚀 Download
+[![portfolio](https://img.shields.io/badge/Source_Code-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markcalendario/real-time-chat-app-ws)
 
 # Real Time Chat App 
 
 It is a simple web-based real time chat application built in MERN Stack and built-in Websocket.
-
 
 
 ## Lessons Learned
@@ -76,4 +77,3 @@ Starting the server
 
 ![App Screenshot](https://i.imgur.com/3IjXjX8.png)
 ![App Screenshot](https://i.imgur.com/0xmFJv9.png)![App Screenshot](https://i.imgur.com/nyqRZcX.png)
-
